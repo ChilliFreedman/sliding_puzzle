@@ -8,7 +8,6 @@ type BoardProps = {
 
 export const Board = ({ board, onTileClick }: BoardProps) => {
   const size = Math.sqrt(board.length);
-  console.log(size)
 
   return (
     <div
