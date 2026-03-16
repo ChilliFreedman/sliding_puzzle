@@ -1,7 +1,30 @@
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+.app{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 1.25rem;
+}
+
+.shuffle-bt {
+  padding: 0.5rem 1rem;          
+  background-color:green;    
+  color: white;                
+  font-size: 1rem;             
+  font-weight: bold;
+  border: none;                 
+  border-radius: 0.5rem;           
+  cursor: pointer;             
+  box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.2);
+}
+
+.shuffle-bt:hover {
+  background-color: darkgreen;     
 }

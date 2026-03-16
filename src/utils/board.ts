@@ -1,3 +1,5 @@
+import { random } from "lodash";
+
 const EMPTY_TILE = 0;
 
 export function createBoard(size: number): number[] {
@@ -12,21 +14,35 @@ export function createBoard(size: number): number[] {
   return arr;
 }
 
-function canMove(board: number[], index: number): boolean {
+export function getAvailableTiles(board: number[]): number[] {
   const emptyIndex = board.indexOf(EMPTY_TILE);
   const size = Math.sqrt(board.length);
+  const row = Math.floor(emptyIndex / size);
+  const col = emptyIndex % size;
+  const availableTiles = [];
 
-  const row = Math.floor(index / size);
-  const col = index % size;
+  if (row > 0) {
+    availableTiles.push(emptyIndex - size);
+  }
 
-  const emptyRow = Math.floor(emptyIndex / size);
-  const emptyCol = emptyIndex % size;
+  if (row < size - 1) {
+    availableTiles.push(emptyIndex + size);
+  }
 
-  const isAdjacent =
-    (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
-    (col === emptyCol && Math.abs(row - emptyRow) === 1);
+  if (col > 0) {
+    availableTiles.push(emptyIndex - 1);
+  }
 
-  return isAdjacent;
+  if (col < size - 1) {
+    availableTiles.push(emptyIndex + 1);
+  }
+
+  return availableTiles;
+}
+
+function canMove(board: number[], index: number): boolean {
+  const availableTiles = getAvailableTiles(board);
+  return availableTiles.includes(index);
 }
 
 export function moveTile(board: number[], index: number): number[] {
@@ -41,3 +57,16 @@ export function moveTile(board: number[], index: number): number[] {
   return newBoard;
 }
 
+export function shuffleBoard(board: number[]): number[] {
+  let newBoard = [...board];
+  const moves = random(100, 300);
+
+  for (let i = 0; i < moves; i++) {
+    const possibleMoves = getAvailableTiles(newBoard);
+    const randomIndex = random(possibleMoves.length - 1);
+    newBoard = moveTile(newBoard, possibleMoves[randomIndex]);
+  }
+
+  return newBoard;
+}
+  
