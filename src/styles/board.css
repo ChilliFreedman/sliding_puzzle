@@ -5,4 +5,7 @@
   background-color: red; 
   border-radius: 0.75rem; 
   box-shadow: 0 0.25rem 0.625rem rgba(0,0,0,0.5); 
+  width: 25rem;
+  height: 25rem;
 }
+

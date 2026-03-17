@@ -3,14 +3,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .app{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .shuffle-bt {
@@ -28,3 +28,12 @@ body {
 .shuffle-bt:hover {
   background-color: darkgreen;     
 }
+
+.top-bar {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+
+

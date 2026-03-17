@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Board } from "./components/Board";
+import { SizeSelector } from "./components/SizeSelector";
 import { createBoard, moveTile, shuffleBoard } from "./utils/board";
 
 const amountOfTiles = 9;
@@ -15,11 +16,18 @@ function App() {
     setBoard(shuffleBoard(board));
   }
 
+  function handleBoardSizeChange(amount: number) {
+    setBoard(shuffleBoard(createBoard(amount)));
+  }
+  
   return (
     <div className="app">
-      <Board board={board} onTileClick={handleTileClick} />
-      <button className="shuffle-bt" onClick={handleShuffle}>Shuffle</button>
-    </div>
+      <div className="top-bar">
+        <SizeSelector value={board.length} onChange={handleBoardSizeChange} />
+        <button className="shuffle-bt" onClick={handleShuffle}>Shuffle</button>
+      </div >
+      <Board board={board} onTileClick={handleTileClick} />     
+    </div>  
   );
 };
 
