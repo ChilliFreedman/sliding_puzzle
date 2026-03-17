@@ -70,3 +70,12 @@ export function shuffleBoard(board: number[]): number[] {
   return newBoard;
 }
   
+export function isSolved(board: number[]): boolean {
+  for (let i = 0; i < board.length - 1; i++) {
+    if (board[i] !== i + 1) {
+      return false;
+    }
+  }
+
+  return board[board.length - 1] === 0;
+}

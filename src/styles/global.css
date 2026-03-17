@@ -5,6 +5,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  max-height: 100vh;
 }
 
 .app{
@@ -36,5 +37,12 @@ body {
   gap: 0.5rem;
 }
 
-
+.win-message {
+  font-size: 2rem;
+  font-weight: bold;
+  color: green;
+  background-color: lightgreen;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
 
