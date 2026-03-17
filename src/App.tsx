@@ -32,11 +32,7 @@ function App() {
   
   return (
     <div className="app">
-      {isWin ? (
-        <div className="win-message">
-          You succeeded!
-        </div>
-      ) : null}
+      {isWin ? (<div className="win-message">You succeeded!</div>) : null}
       <div className="top-bar">
         <SizeSelector value={board.length} onChange={handleBoardSizeChange} />
         <button className="shuffle-bt" onClick={handleShuffle}>Shuffle</button>
