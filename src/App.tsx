@@ -1,45 +1,53 @@
 import { useState } from "react";
-import { Board } from "./components/Board";
-import { SizeSelector } from "./components/SizeSelector";
-import { createBoard, moveTile, shuffleBoard, isSolved } from "./utils/board";
+import Board from "./components/Board";
+import TopBar from "./components/TopBar";
+import styled from "styled-components";
+import { createBoard, moveTile, shuffleBoard, isSolved } from "./utils/boardUtils";
+import { DEFAULT_BOARD_SIZE } from "./utils/constants/game";
 
-const amountOfTiles = 9;
-
-function App() {
-  const [board, setBoard] = useState<number[]>(createBoard(amountOfTiles));
-  const [isWin, setIsWin] = useState(false);
+const App = () => {
+  const [board, setBoard] = useState<number[]>(createBoard(DEFAULT_BOARD_SIZE));
 
   function handleTileClick(index: number) {
-    const newBoard = moveTile(board, index);
-    setBoard(newBoard);
-
-    if (isSolved(newBoard)) {
-      setIsWin(true);
-    }
+    setBoard(moveTile(board, index));
   }
 
   function handleShuffle() {
-    const newBoard = shuffleBoard(board);
-    setBoard(newBoard);
-    setIsWin(false);
+    setBoard(shuffleBoard(board));
   }
 
   function handleBoardSizeChange(amount: number) {
-    const newBoard = shuffleBoard(createBoard(amount));
-    setBoard(newBoard);
-    setIsWin(false);
+    setBoard(createBoard(amount));
   }
   
   return (
-    <div className="app">
-      {isWin ? (<div className="win-message">You succeeded!</div>) : null}
-      <div className="top-bar">
-        <SizeSelector value={board.length} onChange={handleBoardSizeChange} />
-        <button className="shuffle-bt" onClick={handleShuffle}>Shuffle</button>
-      </div >
+    <AppWrapper>
+      {isSolved(board) ? (<WinMessage>You succeeded!</WinMessage>) : null}
+      <TopBar
+        value={board.length}
+        onSizeChange={handleBoardSizeChange}
+        onShuffle={handleShuffle}
+      />
       <Board board={board} onTileClick={handleTileClick} />     
-    </div>  
+    </AppWrapper>
   );
 };
 
 export default App;
+
+const AppWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const WinMessage = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+  color: yellow;
+  background-color: red;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+`;
+

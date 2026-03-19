@@ -1,17 +1,11 @@
 import { random } from "lodash";
-
-const EMPTY_TILE = 0;
+import { EMPTY_TILE } from "./constants/game";
 
 export function createBoard(size: number): number[] {
-  const arr = [];
+  const arr = Array.from({ length: size - 1 }, (_, index) => index + 1);
+  arr.push(EMPTY_TILE);
 
-  for (let i = 1; i < size; i++) {
-    arr.push(i);
-  }
-
-  arr.push(EMPTY_TILE) ;
-
-  return arr;
+  return(shuffleBoard(arr));
 }
 
 export function getAvailableTiles(board: number[]): number[] {
@@ -67,15 +61,12 @@ export function shuffleBoard(board: number[]): number[] {
     newBoard = moveTile(newBoard, possibleMoves[randomIndex]);
   }
 
-  return newBoard;
+  return newBoard;   
 }
   
 export function isSolved(board: number[]): boolean {
-  for (let i = 0; i < board.length - 1; i++) {
-    if (board[i] !== i + 1) {
-      return false;
-    }
-  }
+  const solvedBoard = Array.from({ length: board.length - 1 }, (_, index) => index + 1);
+  solvedBoard.push(EMPTY_TILE);
 
-  return board[board.length - 1] === 0;
+  return board.every((value, index) => value === solvedBoard[index]);
 }
