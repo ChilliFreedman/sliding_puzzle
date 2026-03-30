@@ -10,7 +10,7 @@ const Board = ({ board, onTileClick }: BoardProps) => {
   const size = Math.sqrt(board.length);
 
   return (
-    <StyledBoard columns={size}>
+    <StyledBoard $columns={size}>
       {board.map((value, index) => (
         <Tile key={index} value={value} onClick={() => onTileClick(index)} />
       ))}
@@ -20,7 +20,7 @@ const Board = ({ board, onTileClick }: BoardProps) => {
 
 export default Board;
 
-const StyledBoard = styled.div<{ columns: number }>`
+const StyledBoard = styled.div<{ $columns: number }>`
   display: grid;
   gap: 0.25rem;
   padding: 1.25rem;
@@ -29,6 +29,6 @@ const StyledBoard = styled.div<{ columns: number }>`
   box-shadow: 0 0.25rem 0.625rem rgba(0,0,0,0.5);
   width: 25rem;
   height: 25rem;
-  grid-template-columns: repeat(${({ columns }) => columns}, 1fr);
+  grid-template-columns: repeat(${({ $columns }) => $columns}, 1fr);
 `;
 
