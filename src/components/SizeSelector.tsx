@@ -6,15 +6,18 @@ type SizeSelectorProps = {
 };
 
 const SizeSelector = ({ value, onChange }: SizeSelectorProps) => {
+  const sizes = [3, 4, 5, 6];
+
   return (
      <StyledSelect
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
       >
-        <option value={9}>3x3</option>
-        <option value={16}>4x4</option>
-        <option value={25}>5x5</option>
-        <option value={36}>6x6</option>
+        {sizes.map((size) => (
+          <option key={size} value={size * size}>
+            {size}x{size}
+          </option>
+        ))}
       </StyledSelect>
   );
 };

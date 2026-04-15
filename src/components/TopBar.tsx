@@ -1,7 +1,7 @@
 import SizeSelector from "./SizeSelector";
 import styled from "styled-components";
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { useUser } from "../contexts/UserContext";
+
 
 type TopBarProps = {
   value: number;
@@ -10,9 +10,7 @@ type TopBarProps = {
 };
 
 const TopBar = ({ value, onSizeChange, onShuffle }: TopBarProps) => {
-  const userContext = useContext(UserContext);
-  if (!userContext) throw new Error("UserContext is undefined");
-  const { logout } = userContext;
+  const { logout } = useUser();
   
   return (
     <Wrapper>

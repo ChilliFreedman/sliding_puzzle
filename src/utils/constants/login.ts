@@ -1,0 +1,6 @@
+export const LOGIN_RULES = {
+  AGE_MIN: 1,
+  AGE_MAX: 120,
+  NAME_MAX_LENGTH: 10,
+  COUNTRY_MAX_LENGTH: 13,
+};

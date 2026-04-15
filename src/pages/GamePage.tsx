@@ -1,19 +1,19 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import Board from "../components/Board";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import { createBoard, moveTile, shuffleBoard, isSolved } from "../utils/boardUtils";
 import { DEFAULT_BOARD_SIZE } from "../utils/constants/game";
-import { UserContext } from "../contexts/UserContext";
+import { useUser } from "../contexts/UserContext";
+
 
 const GamePage = () => {
   const [board, setBoard] = useState<number[]>(createBoard(DEFAULT_BOARD_SIZE));
-  const userContext = useContext(UserContext);
-  if (!userContext) throw new Error("UserContext is undefined");
-  const { user } = userContext;
+  const { user } = useUser();
+  const isSolvedBoard = isSolved(board);
 
   function handleTileClick(index: number) {
-    setBoard(moveTile(board, index));
+      setBoard(moveTile(board, index));
   }
 
   function handleShuffle() {
@@ -26,16 +26,33 @@ const GamePage = () => {
   
   return (
     <AppWrapper>
-      <TopRowMessages>
+      <GameHeader>
         {user ? <UserName>Hello {user.name} !</UserName> : null}
-        {isSolved(board) ? <WinMessage>You succeeded!</WinMessage> : null}
-      </TopRowMessages>
+      </GameHeader>
+      
       <TopBar
         value={board.length}
         onSizeChange={handleBoardSizeChange}
         onShuffle={handleShuffle}
       />
       <Board board={board} onTileClick={handleTileClick} />     
+      {isSolvedBoard 
+        ?
+        <WinOverlay>
+          <WinBox>
+            <h1>You succeeded!</h1>
+
+            <button
+              onClick={() => {
+                setBoard(shuffleBoard(board));
+              }}
+            >
+              Play again
+            </button>
+          </WinBox>
+        </WinOverlay>
+        : null 
+      }
     </AppWrapper>
   );
 };
@@ -48,9 +65,8 @@ const AppWrapper = styled.div`
   gap: 1rem;
 `;
 
-const TopRowMessages = styled.div`
-  display: flex;
-  justify-content: space-between;       
+const GameHeader = styled.div`
+  display: flex;   
 `;
 
 const UserName = styled.div`
@@ -62,13 +78,36 @@ const UserName = styled.div`
   text-align: center;
 `;
 
-const WinMessage = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: red;
-  background-color: yellow;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  text-align: center;
+const WinOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
+const WinBox = styled.div`
+  background-color: red;
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  text-align: center;
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.3);
+
+  h1 {
+    margin-bottom: 1rem;
+    color: yellow;
+  }
+
+  button {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: yellow;
+    font-size: 1rem;
+    
+    &:hover {
+      background-color: gold;
+    }
+  }
+`;

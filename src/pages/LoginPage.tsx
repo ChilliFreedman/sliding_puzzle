@@ -1,42 +1,63 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { LOGIN_RULES } from "../utils/constants/login";
+import { useUser } from "../contexts/UserContext";
+
 
 type FormData = {
   name: string;
   age: number;
-  contry: string;
+  country: string;
 };
 
 const LoginPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const userContext = useContext(UserContext);
-  if (!userContext) throw new Error("UserContext is undefined");
-  const { login } = userContext;
+  const { login } = useUser();
 
   const onSubmit = (data: FormData) => {
-    login(data.name, data.age, data.contry);
+    login(data.name, data.age, data.country);
   };
 
   return (
-  <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+  <FormWrapper noValidate onSubmit={handleSubmit(onSubmit)}>
     <Title>Sliding Puzzle Game</Title>
     <Input
-      placeholder="Name" maxLength={10}
-      {...register("name", { required: "Name is required" })}
+      placeholder="Name" 
+      {...register("name", {
+        required: "Name is required",
+        maxLength: {
+          value: LOGIN_RULES.NAME_MAX_LENGTH,
+          message: `Name cannot exceed ${LOGIN_RULES.NAME_MAX_LENGTH} characters`
+        }
+       })}
     />
-    {errors.name ? (
-      <ErrorMessage>{errors.name.message}</ErrorMessage>
-    ) : null}
+    <ErrorMessage>
+      {errors.name?.message || null}
+    </ErrorMessage>
     <Input
       type="number"
-      min={1} max={120} placeholder="Age"
-      {...register("age", { valueAsNumber: true })}
+      min={LOGIN_RULES.AGE_MIN} 
+      max={LOGIN_RULES.AGE_MAX} 
+      placeholder="Age"
+      {...register("age",
+        { valueAsNumber: true,
+        required: "Please enter a number",
+        min: {
+          value: LOGIN_RULES.AGE_MIN,
+          message: "Min age is 1"
+        },
+        max: {
+          value: LOGIN_RULES.AGE_MAX,
+          message: "Max age is 120"
+        }
+      })}
     />
+    <ErrorMessage>
+      {errors.age?.message || null}
+    </ErrorMessage>
     <Input
-      placeholder="Contry" maxLength={13}
-      {...register("contry")}
+      placeholder="Country" maxLength={LOGIN_RULES.COUNTRY_MAX_LENGTH}
+      {...register("country")}
     />
     <SubmitButton type="submit">
       Login
@@ -80,6 +101,7 @@ const ErrorMessage = styled.div`
   color: red;
   font-size: 0.9rem;
   margin-top: -1rem;
+  min-height: 1rem;
 `;
 
 const SubmitButton = styled.button`

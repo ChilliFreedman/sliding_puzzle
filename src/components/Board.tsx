@@ -12,7 +12,7 @@ const Board = ({ board, onTileClick }: BoardProps) => {
   return (
     <StyledBoard $columns={size}>
       {board.map((value, index) => (
-        <Tile key={index} value={value} onClick={() => onTileClick(index)} />
+        <Tile key={value} value={value} onClick={() => onTileClick(index)} />
       ))}
     </StyledBoard>
   );
