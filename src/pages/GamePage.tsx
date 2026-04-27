@@ -6,7 +6,7 @@ import TopBar from "../components/TopBar";
 import { useUser } from "../contexts/UserContext";
 import { createBoard, moveTile, shuffleBoard, isSolved, boardToGrid, createTargetBoardGrid } from "../utils/boardUtils";
 import { solvePuzzle } from "../utils/puzzleApi";
-import { DEFAULT_BOARD_SIZE, EMPTY_TILE, EMPTY_TILE_IN_STRING, STEP_DELAY_MS, START_STEP } from "../utils/constants/game";
+import { DEFAULT_BOARD_SIZE, EMPTY_TILE_IN_STRING, STEP_DELAY_MS, START_STEP } from "../utils/constants/game";
 
 
 type SolveRequest = {
@@ -59,7 +59,7 @@ const GamePage = () => {
       isPausedRef.current = false;
       setIsPaused(false);
 
-      runStep(EMPTY_TILE);
+      runStep(START_STEP);
     },
 
     onError: (error) => {
