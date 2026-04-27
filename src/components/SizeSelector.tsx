@@ -1,19 +1,21 @@
 import styled from "styled-components";
+import { BOARD_SIZES } from "../utils/constants/game";
 
 type SizeSelectorProps = {
   value: number;
   onChange: (size: number) => void;
+  disabled: boolean;
 };
 
-const SizeSelector = ({ value, onChange }: SizeSelectorProps) => {
-  const sizes = [3, 4, 5, 6];
+const SizeSelector = ({ value, onChange, disabled }: SizeSelectorProps) => {
 
   return (
      <StyledSelect
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
+        disabled={disabled}
       >
-        {sizes.map((size) => (
+        {BOARD_SIZES.map((size) => (
           <option key={size} value={size * size}>
             {size}x{size}
           </option>
@@ -37,5 +39,10 @@ const StyledSelect = styled.select`
   &:hover {
     background-color: darkred;
   }
-`;
 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: gray;
+  }
+`;

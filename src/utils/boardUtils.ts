@@ -1,5 +1,5 @@
 import { random } from "lodash";
-import { EMPTY_TILE } from "./constants/game";
+import { EMPTY_TILE, EMPTY_TILE_IN_STRING } from "./constants/game";
 
 export function createBoard(size: number): number[] {
   const arr = Array.from({ length: size - 1 }, (_, index) => index + 1);
@@ -69,4 +69,24 @@ export function isSolved(board: number[]): boolean {
   solvedBoard.push(EMPTY_TILE);
 
   return board.every((value, index) => value === solvedBoard[index]);
+}
+
+function splitToRows(arr: string[]): string[][] {
+  const rowSize = Math.sqrt(arr.length);
+  return Array.from({ length: rowSize }, (_, rowIndex) =>
+    arr.slice(rowIndex * rowSize, (rowIndex + 1) * rowSize)
+  );
+}
+
+export function boardToGrid(board: number[]): string[][] {
+  const stringBoard = board.map(String);
+
+  return splitToRows(stringBoard)
+}
+
+export function createTargetBoardGrid(board: number[]): string[][] {
+  const flatTargetBoard = Array.from({ length: board.length - 1 }, (_, index) => String(index + 1));
+  flatTargetBoard.push(EMPTY_TILE_IN_STRING);
+  
+  return splitToRows(flatTargetBoard)
 }
