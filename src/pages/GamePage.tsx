@@ -1,24 +1,11 @@
 import { useState, useRef } from "react";
-import { useMutation } from "@tanstack/react-query";
 import styled from "styled-components";
 import Board from "../components/Board";
 import TopBar from "../components/TopBar";
 import { useUser } from "../contexts/UserContext";
 import { createBoard, moveTile, shuffleBoard, isSolved, boardToGrid, createTargetBoardGrid } from "../utils/boardUtils";
-import { solvePuzzle } from "../utils/puzzleApi";
 import { DEFAULT_BOARD_SIZE, EMPTY_TILE_IN_STRING, STEP_DELAY_MS, START_STEP } from "../utils/constants/game";
-
-type SolveRequest = {
-  board: string[][];
-  movable_tile: string;
-  target_board: string[][];
-};
-
-type SolveResponse = {
-  path: string[][][];
-  solvable: boolean;
-  steps: number;
-};
+import { useSolvePuzzle } from "../hooks/useSolvePuzzle";
 
 const GamePage = () => {
   const [board, setBoard] = useState<number[]>(createBoard(DEFAULT_BOARD_SIZE));
@@ -48,47 +35,29 @@ const GamePage = () => {
     setBoard(createBoard(amount));
     setHasUserMoved(false);
   }
-  
-  const solveMutation = useMutation<SolveResponse, Error, SolveRequest>({
-    mutationFn: solvePuzzle,
-    
-    onSuccess: (data) => {
-      pathRef.current = data.path;
-      setCurrentStep(START_STEP);
-      setIsSolving(true);
-      isPausedRef.current = false;
-      setIsPaused(false);
+ 
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-      runStep(START_STEP);
-    },
-
-    onError: (error) => {
-      console.error(error);
-      setIsSolving(false);
-    }
-  });
-  
-  function runStep(index: number) {
+  async function runSolutionAnimation(startIndex: number) {
     const path = pathRef.current;
     if (!path) return;
 
-    if (isPausedRef.current) return;
-
-    if (index >= path.length) {
-      setIsSolving(false);
-      return;
-    }
-
-    setTimeout(() => {
+    for (let index = startIndex; index < path.length; index++) {
       if (isPausedRef.current) return;
 
       setBoard(path[index].flat().map(Number));
       setCurrentStep(index + 1);
 
-      runStep(index + 1);
-    }, STEP_DELAY_MS);
+      await sleep(STEP_DELAY_MS);
+    }
+
+    setIsSolving(false);
   }
   
+  const solveMutation = useSolvePuzzle();
+
   function handleSolve() {
     if (isSolving && !isPausedRef.current) {
       isPausedRef.current = true;
@@ -99,17 +68,34 @@ const GamePage = () => {
     if (isSolving && isPausedRef.current) {
       isPausedRef.current = false;
       setIsPaused(false);
-      runStep(currentStep);
+      runSolutionAnimation(currentStep);
       return;
     }
 
     setHasUserMoved(false);
     
-    solveMutation.mutate({
-      board: boardToGrid(board),
-      movable_tile: EMPTY_TILE_IN_STRING,
-      target_board: createTargetBoardGrid(board)
-    });
+    solveMutation.mutate(
+      {
+        board: boardToGrid(board),
+        movable_tile: EMPTY_TILE_IN_STRING,
+        target_board: createTargetBoardGrid(board),
+      },
+      {
+        onSuccess: (data) => {
+          pathRef.current = data.path;
+          setCurrentStep(START_STEP);
+          setIsSolving(true);
+          isPausedRef.current = false;
+          setIsPaused(false);
+
+          runSolutionAnimation(START_STEP);
+        },
+        onError: (error) => {
+          console.error(error);
+          setIsSolving(false);
+        },
+      }
+    );
   }
 
   return (
@@ -159,6 +145,11 @@ const GamePage = () => {
         </ErrorOverlay>
       ): null
       }
+      {solveMutation.isPending ? (
+        <LoadingOverlay>
+          <Spinner />
+        </LoadingOverlay>
+      ) : null} 
     </AppWrapper>
   );
 };
@@ -250,6 +241,30 @@ const ErrorBox = styled.div`
 
     &:hover {
       background-color: darkred;
+    }
+  }
+`;
+
+const LoadingOverlay = styled.div`
+  background: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Spinner = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border: 0.8rem solid white;
+  border-top-color: red;
+  border-radius: 50%;
+  animation: loading 1s linear infinite;
+
+  @keyframes loading {
+    to {
+      transform: rotate(360deg);
     }
   }
 `;
