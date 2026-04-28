@@ -8,7 +8,6 @@ import { createBoard, moveTile, shuffleBoard, isSolved, boardToGrid, createTarge
 import { solvePuzzle } from "../utils/puzzleApi";
 import { DEFAULT_BOARD_SIZE, EMPTY_TILE_IN_STRING, STEP_DELAY_MS, START_STEP } from "../utils/constants/game";
 
-
 type SolveRequest = {
   board: string[][];
   movable_tile: string;
@@ -20,6 +19,7 @@ type SolveResponse = {
   solvable: boolean;
   steps: number;
 };
+
 const GamePage = () => {
   const [board, setBoard] = useState<number[]>(createBoard(DEFAULT_BOARD_SIZE));
   const [hasUserMoved, setHasUserMoved] = useState(false);
